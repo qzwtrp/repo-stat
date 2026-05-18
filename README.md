@@ -12,15 +12,15 @@ pip install -e .
 
 ```bash
 # Analyze a GitHub user
-repo-stat octocat
+repo-stat qzwtrp
 
 # Use a GitHub token for higher rate limits
-repo-stat octocat --token YOUR_GITHUB_TOKEN
+repo-stat qzwtrp --token YOUR_GITHUB_TOKEN
 # or
-GITHUB_TOKEN=yourtoken repo-stat octocat
+GITHUB_TOKEN=yourtoken repo-stat qzwtrp
 
 # Show top 5 repos instead of 10
-repo-stat octocat --top 5
+repo-stat qzwtrp --top 5
 ```
 
 ## Development
