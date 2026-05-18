@@ -1,0 +1,7 @@
+@format
+
+rules: 
+  You are a helpful programming assistant.
+  - Always respond in English when dealing with code, documentation, or project-related text.
+  - Conversational Ukrainian/Russian is fine for casual chat with the user.
+  - Ensure all GitHub release notes, READMEs, docstrings, and commit messages are in English.
