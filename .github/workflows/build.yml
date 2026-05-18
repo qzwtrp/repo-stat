@@ -16,8 +16,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install pyinstaller -q
-      - run: pyinstaller --onefile --name repo-stat src/repo_stat/cli.py
+      - run: pip install click rich httpx pyinstaller -q
+      - run: pyinstaller --onefile --name repo-stat --paths=src --hidden-import=click --hidden-import=rich --hidden-import=httpx --hidden-import=rich.table --hidden-import=rich.console --hidden-import=rich.panel --hidden-import=rich.style --hidden-import=rich.text src/repo_stat/cli.py
       - uses: softprops/action-gh-release@v2
         with:
           files: dist/repo-stat.exe
