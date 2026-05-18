@@ -105,3 +105,18 @@ def test_build_stats_skips_none_language():
 
     stats = build_stats("t", raw_user, raw_repos)
     assert stats.language_counts == {}
+
+
+def test_build_stats_top_limit():
+    raw_user = {"login": "t"}
+    raw_repos = [
+        {"name": f"r{i}", "language": "Python", "stargazers_count": i, "forks_count": 0,
+         "created_at": "2023-01-01T00:00:00Z", "updated_at": "2023-01-01T00:00:00Z", "html_url": "",
+        }
+        for i in range(5)
+    ]
+    stats = build_stats("t", raw_user, raw_repos, top_limit=3)
+    assert len(stats.top_repositories) == 3
+    names = [r.name for r in stats.top_repositories]
+    assert names == ["r4", "r3", "r2"]
+    assert stats.total_stars == 10  # 4+3+2+1+0 = 10 (all repos, just top_repos limited)

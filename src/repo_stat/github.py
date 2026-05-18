@@ -78,8 +78,9 @@ def build_stats(
     username: str,
     raw_user: dict[str, Any],
     raw_repos: list[dict[str, Any]],
+    top_limit: int | None = None,
 ) -> UserStats:
-    repos = [
+    all_repos = [
         Repository(
             name=r["name"],
             description=r.get("description"),
@@ -96,10 +97,11 @@ def build_stats(
         for r in raw_repos
     ]
 
-    repos.sort(key=lambda r: (-r.stars, r.name))
+    sorted_repos = sorted(all_repos, key=lambda r: (-r.stars, r.name))
+    top_repos = sorted_repos if top_limit is None else sorted_repos[:top_limit]
 
     language_counts: dict[str, int] = {}
-    for r in repos:
+    for r in top_repos:
         if r.language:
             language_counts[r.language] = language_counts.get(r.language, 0) + 1
 
@@ -110,8 +112,8 @@ def build_stats(
         public_repos=raw_user.get("public_repos", 0),
         followers=raw_user.get("followers", 0),
         following=raw_user.get("following", 0),
-        top_repositories=repos,
+        top_repositories=top_repos,
         language_counts=language_counts,
-        total_stars=sum(r.stars for r in repos),
-        total_forks=sum(r.forks for r in repos),
+        total_stars=sum(r.stars for r in all_repos),
+        total_forks=sum(r.forks for r in all_repos),
     )
