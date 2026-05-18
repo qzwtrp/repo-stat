@@ -7,8 +7,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux
+          - os: windows-latest
+            target: windows
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: write
     steps:
@@ -18,8 +25,16 @@ jobs:
           python-version: '3.11'
       - run: pip install click rich httpx pyinstaller -q
       - run: pyinstaller --onefile --name repo-stat --paths=src --hidden-import=click --hidden-import=rich --hidden-import=httpx --hidden-import=rich.table --hidden-import=rich.console --hidden-import=rich.panel --hidden-import=rich.style --hidden-import=rich.text src/repo_stat/cli.py
+      - name: Rename binary
+        shell: bash
+        run: |
+          if [ "${{ matrix.target }}" = "windows" ]; then
+            mv dist/repo-stat.exe "dist/repo-stat_${{ matrix.target }}.exe"
+          else
+            mv dist/repo-stat "dist/repo-stat_${{ matrix.target }}"
+          fi
       - uses: softprops/action-gh-release@v2
         with:
-          files: dist/repo-stat.exe
+          files: dist/repo-stat_${{ matrix.target }}*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
